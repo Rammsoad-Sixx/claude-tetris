@@ -30,8 +30,24 @@ jobs:
             Analiza el issue #${{ github.event.issue.number }} de este repositorio (evento: ${{ github.event_name }}, acción: ${{ github.event.action }}).
 
             1. Lee el título y cuerpo del issue con `gh issue view ${{ github.event.issue.number }}`.
-            2. Lista los labels existentes del repo con `gh label list`. Elige SOLO entre los labels que ya existen (no crees labels nuevos) los que apliquen a este issue (puede ser más de uno).
+            2. Lista los labels existentes del repo con `gh label list`. Elige los labels que apliquen a este issue (puede ser más de uno). Puedes usar labels existentes o crear labels nuevos si son razonables y específicos para este problema.
             3. Aplica los labels elegidos con `gh issue edit ${{ github.event.issue.number }} --add-label "..."`. No quites labels que ya haya puesto una persona manualmente salvo que sean claramente incorrectos.
-            4. Revisa los comentarios existentes del issue. Si tú (Claude) ya dejaste un comentario de diagnóstico anteriormente y el diagnóstico no cambia de forma relevante con esta edición, NO comentes de nuevo. Si es la primera vez, o el diagnóstico cambia sustancialmente, publica un comentario breve (máx. 5-6 líneas) con: (a) tipo de problema, (b) severidad estimada (baja/media/alta), (c) próximos pasos sugeridos.
+            4. Revisa los comentarios existentes del issue. Si tú (Claude) ya dejaste un comentario de diagnóstico anteriormente y el diagnóstico no cambia de forma relevante con esta edición, NO comentes de nuevo. Si es la primera vez, o el diagnóstico cambia sustancialmente, publica un comentario en Markdown con estructura clara:
 
-            Sé conciso y evita ruido innecesario en el issue.
+            Publica el comentario con este formato Markdown:
+            ```
+            ## 📋 Diagnóstico automático
+
+            **Tipo de problema:** [tipo específico]
+
+            **Severidad:** [baja/media/alta]
+
+            **Descripción:** [Breve explicación del problema identificado]
+
+            **Próximos pasos sugeridos:**
+            - [paso 1]
+            - [paso 2]
+            - [paso 3 si aplica]
+            ```
+
+            Mantén el análisis conciso (máx. 10 líneas incluyendo estructura) y evita ruido innecesario.
