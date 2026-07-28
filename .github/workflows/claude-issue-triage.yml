@@ -4,53 +4,81 @@ on:
   issues:
     types: [opened, edited]
 
-concurrency:
-  group: issue-triage-${{ github.event.issue.number }}
-  cancel-in-progress: true
-
 jobs:
   triage:
+    if: github.event.sender.type != 'Bot'
     runs-on: ubuntu-latest
     permissions:
       contents: read
       issues: write
       id-token: write
-      actions: write
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 1
 
-      - name: Run Claude Issue Triage
-        id: claude-triage
+      - name: Triage issue with Claude
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          claude_args: --allowed-tools Bash(gh issue *)
+          claude_args: '--allowed-tools "Bash(gh issue *),Bash(gh label *),Read,Glob,Grep"'
           prompt: |
-            Analiza el issue #${{ github.event.issue.number }} de este repositorio (evento: ${{ github.event_name }}, acción: ${{ github.event.action }}).
+            Analiza el issue #${{ github.event.issue.number }} del repositorio ${{ github.repository }}.
 
-            1. Lee el título y cuerpo del issue con `gh issue view ${{ github.event.issue.number }}`.
-            2. Lista los labels existentes del repo con `gh label list`. Elige los labels que apliquen a este issue (puede ser más de uno). Puedes usar labels existentes o crear labels nuevos si son razonables y específicos para este problema.
-            3. Aplica los labels elegidos con `gh issue edit ${{ github.event.issue.number }} --add-label "..."`. No quites labels que ya haya puesto una persona manualmente salvo que sean claramente incorrectos.
-            4. Revisa los comentarios existentes del issue. Si tú (Claude) ya dejaste un comentario de diagnóstico anteriormente y el diagnóstico no cambia de forma relevante con esta edición, NO comentes de nuevo. Si es la primera vez, o el diagnóstico cambia sustancialmente, publica un comentario en Markdown con estructura clara:
+            Título del issue: ${{ github.event.issue.title }}
 
-            Publica el comentario con este formato Markdown:
-            ```
-            ## 📋 Diagnóstico automático
+            Sigue estos pasos en orden:
 
-            **Tipo de problema:** [tipo específico]
+            1. Lee el contenido completo del issue:
+               `gh issue view ${{ github.event.issue.number }}`
 
-            **Severidad:** [baja/media/alta]
+            2. Revisa los labels ya existentes en el repo:
+               `gh label list`
 
-            **Descripción:** [Breve explicación del problema identificado]
+            3. Asigna entre 1 y 4 labels apropiados al issue:
+               `gh issue edit ${{ github.event.issue.number }} --add-label "<label>"`
+               Categorías sugeridas: bug, feature, enhancement, question, documentation,
+               ui, gameplay, performance, refactor, good-first-issue, priority/high, priority/medium, priority/low.
+               Si un label necesario no existe, créalo primero:
+               `gh label create "<name>" --color <hex> --description "<descripción>"`
 
-            **Próximos pasos sugeridos:**
-            - [paso 1]
-            - [paso 2]
-            - [paso 3 si aplica]
-            ```
+            4. Explora los archivos del repositorio que sean relevantes para el issue
+               usando las herramientas Read, Glob y Grep según necesites.
 
-            Mantén el análisis conciso (máx. 10 líneas incluyendo estructura) y evita ruido innecesario.
+            5. Publica UN comentario de diagnóstico en el issue:
+               `gh issue comment ${{ github.event.issue.number }} --body "<contenido>"`
+
+               El contenido debe estar escrito en Markdown compatible con GitHub (GFM):
+               usa encabezados con `##`, listas con `-`, bloques de código con triple backtick,
+               negritas con `**`, y referencias a archivos como `ruta/archivo.js:42`.
+               No uses HTML ni sintaxis que GitHub no renderice en comentarios de issues.
+
+               El comentario debe tener exactamente esta estructura en español:
+
+               ## 🔍 Diagnóstico automático
+
+               **Categoría:** <tipo: bug / feature / mejora / pregunta / documentación>
+               <2-4 líneas describiendo el issue y su impacto>
+
+               ## 📁 Área del código afectada
+               <lista de archivos, funciones o constantes relevantes con referencias file:línea>
+
+               ## 🧠 Causa raíz / análisis técnico
+               <explicación técnica de por qué ocurre el problema o por qué falta la funcionalidad>
+
+               ## 🛠️ Propuesta de solución
+               <pasos concretos de implementación numerados, indicando qué archivos tocar y qué cambiar>
+
+               ## ⚠️ Riesgos y consideraciones
+               <regresiones posibles, edge cases, dependencias a tener en cuenta>
+
+               ---
+               *Diagnóstico generado automáticamente por Claude. Verificar antes de implementar.*
+
+            Notas importantes:
+            - Si el issue es ambiguo o le falta información, pídela en el comentario en lugar de inventar.
+            - Si ya existe un comentario previo de diagnóstico de Claude (caso de issue editado),
+              edita ese comentario en lugar de crear uno nuevo para no duplicar.
+            - Sé técnico y preciso: este diagnóstico será usado directamente como base para implementar la solución.
