@@ -310,3 +310,9 @@ kbd {
   font-family: inherit;
   cursor: pointer;
 }
+
+#pause-level-hint {
+  font-size: 10px;
+  color: var(--label-color);
+  letter-spacing: 0.5px;
+}

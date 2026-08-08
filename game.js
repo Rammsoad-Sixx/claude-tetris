@@ -125,9 +125,13 @@ function clearLines() {
     lines += cleared;
     score += (LINE_SCORES[cleared] || 0) * level;
     level = startLevel + Math.floor(lines / 10);
-    dropInterval = Math.max(100, 1000 - (level - 1) * 90);
+    dropInterval = computeDropInterval(level);
     updateHUD();
   }
+}
+
+function computeDropInterval(lvl) {
+  return Math.max(100, 1000 - (lvl - 1) * 90);
 }
 
 function ghostY() {
@@ -275,14 +279,15 @@ function loop(ts) {
 }
 
 function init() {
-  startLevel = parseInt(localStorage.getItem('startLevel'), 10) || 1;
+  const storedLevel = parseInt(localStorage.getItem('startLevel'), 10) || 1;
+  startLevel = Math.min(9, Math.max(1, storedLevel));
   board = createBoard();
   score = 0;
   lines = 0;
   level = startLevel;
   paused = false;
   gameOver = false;
-  dropInterval = Math.max(100, 1000 - (level - 1) * 90);
+  dropInterval = computeDropInterval(level);
   dropAccum = 0;
   lastTime = performance.now();
   next = randomPiece();
@@ -296,6 +301,7 @@ function init() {
 }
 
 document.addEventListener('keydown', e => {
+  if (e.code === 'Escape' && document.activeElement === startLevelSelect) return;
   if (e.code === 'KeyP' || e.code === 'Escape') { togglePause(); return; }
   if (paused || gameOver) return;
   switch (e.code) {
@@ -322,15 +328,9 @@ document.addEventListener('keydown', e => {
 
 restartBtn.addEventListener('click', init);
 
-resumeBtn.addEventListener('click', () => {
-  pauseOverlay.classList.add('hidden');
-  togglePause();
-});
+resumeBtn.addEventListener('click', togglePause);
 
-pauseRestartBtn.addEventListener('click', () => {
-  init();
-  pauseOverlay.classList.add('hidden');
-});
+pauseRestartBtn.addEventListener('click', init);
 
 toggleControlsBtn.addEventListener('click', () => {
   pauseControlsList.classList.toggle('hidden');
