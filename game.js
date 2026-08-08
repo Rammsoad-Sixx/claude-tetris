@@ -388,7 +388,12 @@ function drawNext() {
 function loadRecords() {
   try {
     const raw = JSON.parse(localStorage.getItem(RECORDS_KEY));
-    return Array.isArray(raw) ? raw : [];
+    if (!Array.isArray(raw)) return [];
+    // descarta entradas corruptas/incompletas (ej. de versiones anteriores)
+    // para que un dato inválido no rompa el renderizado de records
+    return raw.filter(
+      rec => rec && typeof rec.name === 'string' && Number.isFinite(rec.score)
+    );
   } catch {
     return [];
   }
