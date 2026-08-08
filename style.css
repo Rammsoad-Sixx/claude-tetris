@@ -42,6 +42,27 @@ body.light-theme {
   --grid-color: #d8d8e6;
 }
 
+/* skin-retro intentionally has no override: it keeps whatever board colors
+   the current light/dark theme already defines on :root / body.light-theme */
+
+body.skin-neon {
+  --board-bg: #000000;
+  --board-border: #1a4d4d;
+  --grid-color: #0e2e33;
+}
+
+body.skin-pastel {
+  --board-bg: #fdf6f2;
+  --board-border: #ecd9e4;
+  --grid-color: #f2e2ea;
+}
+
+body.skin-pixelart {
+  --board-bg: #12141c;
+  --board-border: #3a3a3a;
+  --grid-color: #262b36;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -119,6 +140,18 @@ body {
 
 .theme-toggle input:checked + .theme-toggle-slider::before {
   transform: translateX(20px);
+}
+
+#skin-select {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  color: var(--kbd-color);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .game-container {
