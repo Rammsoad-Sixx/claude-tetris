@@ -42,6 +42,27 @@ body.light-theme {
   --grid-color: #d8d8e6;
 }
 
+/* skin-retro intentionally has no override: it keeps whatever board colors
+   the current light/dark theme already defines on :root / body.light-theme */
+
+body.skin-neon {
+  --board-bg: #000000;
+  --board-border: #1a4d4d;
+  --grid-color: #0e2e33;
+}
+
+body.skin-pastel {
+  --board-bg: #fdf6f2;
+  --board-border: #ecd9e4;
+  --grid-color: #f2e2ea;
+}
+
+body.skin-pixelart {
+  --board-bg: #12141c;
+  --board-border: #3a3a3a;
+  --grid-color: #262b36;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -119,6 +140,18 @@ body {
 
 .theme-toggle input:checked + .theme-toggle-slider::before {
   transform: translateX(20px);
+}
+
+#skin-select {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  color: var(--kbd-color);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  flex-shrink: 0;
 }
 
 .game-container {
@@ -235,7 +268,10 @@ kbd {
   color: var(--overlay-score-color);
 }
 
-#restart-btn {
+#restart-btn,
+#resume-btn,
+#pause-restart-btn,
+#toggle-controls-btn {
   margin-top: 8px;
   background: var(--restart-bg);
   color: var(--restart-color);
@@ -249,6 +285,169 @@ kbd {
   transition: background 0.15s;
 }
 
-#restart-btn:hover {
+#restart-btn:hover,
+#resume-btn:hover,
+#pause-restart-btn:hover,
+#toggle-controls-btn:hover {
   background: var(--restart-hover);
+}
+
+#pause-title {
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: 4px;
+  color: var(--overlay-title-color);
+}
+
+#pause-controls-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#pause-controls-list.hidden {
+  display: none;
+}
+
+#pause-controls-list li {
+  font-size: 12px;
+  color: var(--controls-color);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: center;
+}
+
+.pause-level-select {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pause-level-select label {
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--label-color);
+  font-weight: 600;
+}
+
+.pause-level-select select {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  color: var(--kbd-color);
+  border-radius: 4px;
+  padding: 4px 8px;
+  font-size: 13px;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+#pause-level-hint {
+  font-size: 10px;
+  color: var(--label-color);
+  letter-spacing: 0.5px;
+}
+
+/* ---- Records ---- */
+#overlay-stats {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: var(--controls-color);
+}
+
+#records-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 200px;
+  max-width: 240px;
+}
+
+#records-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 4px 10px;
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  font-size: 13px;
+  color: var(--text);
+}
+
+#records-list li.record-new {
+  background: var(--restart-bg);
+  border-color: var(--restart-bg);
+  color: var(--restart-color);
+  font-weight: 700;
+}
+
+#records-list li.record-empty {
+  justify-content: center;
+  color: var(--label-color);
+  font-style: italic;
+}
+
+#save-record {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+#player-name {
+  background: var(--kbd-bg);
+  border: 1px solid var(--kbd-border);
+  border-radius: 4px;
+  color: var(--text);
+  padding: 8px 10px;
+  font-size: 13px;
+  width: 140px;
+}
+
+#player-name:focus {
+  outline: 2px solid var(--value-color);
+  outline-offset: 1px;
+}
+
+#save-record-btn {
+  background: var(--restart-bg);
+  color: var(--restart-color);
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: background 0.15s;
+}
+
+#save-record-btn:hover {
+  background: var(--restart-hover);
+}
+
+#reset-records-btn {
+  margin-top: 4px;
+  background: transparent;
+  border: 1px solid var(--kbd-border);
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--controls-color);
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+#reset-records-btn:hover {
+  border-color: var(--value-color);
+  color: var(--value-color);
+}
+
+.hidden {
+  display: none;
 }

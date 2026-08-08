@@ -14,6 +14,12 @@
         <input type="checkbox" id="theme-toggle-input" aria-label="Cambiar entre modo oscuro y modo claro" />
         <span class="theme-toggle-slider"></span>
       </label>
+      <select id="skin-select" aria-label="Cambiar skin del juego" title="Cambiar skin">
+        <option value="retro">Retro</option>
+        <option value="neon">Neon</option>
+        <option value="pastel">Pastel</option>
+        <option value="pixelart">Pixel art</option>
+      </select>
     </div>
     <div class="game-container">
       <canvas id="board" width="300" height="600"></canvas>
@@ -45,6 +51,7 @@
             <li><kbd>↓</kbd> bajar</li>
             <li><kbd>Space</kbd> caída</li>
             <li><kbd>P</kbd> pausa</li>
+            <li><kbd>Escape</kbd> pausa</li>
           </ul>
         </div>
       </aside>
@@ -54,7 +61,46 @@
       <div class="overlay-box">
         <p id="overlay-title">GAME OVER</p>
         <p id="overlay-score"></p>
+        <p id="overlay-stats"></p>
+        <ol id="records-list"></ol>
+        <div id="save-record" class="hidden">
+          <input id="player-name" type="text" maxlength="12" placeholder="Tu nombre" autocomplete="off" />
+          <button id="save-record-btn">Guardar</button>
+        </div>
         <button id="restart-btn">Reiniciar</button>
+        <button id="reset-records-btn">Resetear records</button>
+      </div>
+    </div>
+
+    <div id="pause-overlay" class="overlay hidden">
+      <div class="overlay-box">
+        <p id="pause-title">PAUSA</p>
+        <button id="resume-btn">Reanudar</button>
+        <button id="pause-restart-btn">Reiniciar</button>
+        <button id="toggle-controls-btn">Ver controles</button>
+        <ul id="pause-controls-list" class="hidden">
+          <li><kbd>←</kbd><kbd>→</kbd> mover</li>
+          <li><kbd>↑</kbd> rotar</li>
+          <li><kbd>↓</kbd> bajar</li>
+          <li><kbd>Space</kbd> caída</li>
+          <li><kbd>P</kbd> pausa</li>
+          <li><kbd>Escape</kbd> pausa</li>
+        </ul>
+        <div class="pause-level-select">
+          <label for="start-level-select">Nivel inicial</label>
+          <select id="start-level-select">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+          </select>
+        </div>
+        <p id="pause-level-hint">Se aplicará en la próxima partida</p>
       </div>
     </div>
   </div>
